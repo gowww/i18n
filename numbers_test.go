@@ -3,7 +3,9 @@ package i18n
 import "testing"
 
 func TestFmtn(t *testing.T) {
-	type foobar string
+	type foobarString string
+	type foobar map[interface{}]interface{}
+
 	for l, seps := range langNbrSeps {
 		thousandsMark := seps[0]
 		decimalMark := seps[1]
@@ -13,7 +15,9 @@ func TestFmtn(t *testing.T) {
 			want string
 		}{
 			{123, "123"},
+			{-123, "-123"},
 			{1234, "1" + thousandsMark + "234"},
+			{-1234, "-1" + thousandsMark + "234"},
 			{uint(1234), "1" + thousandsMark + "234"},
 			{uint8(123), "123"},
 			{uint16(1234), "1" + thousandsMark + "234"},
@@ -27,8 +31,9 @@ func TestFmtn(t *testing.T) {
 			{float32(1234.567), "1" + thousandsMark + "234" + decimalMark + "567"},
 			{float64(1234.5678), "1" + thousandsMark + "234" + decimalMark + "5678"},
 			{[]byte("12345678.9101"), "12" + thousandsMark + "345" + thousandsMark + "678" + decimalMark + "9101"},
-			{foobar("1234"), ""},           // Unknown type
-			{"1234.5678.9", "1234.5678.9"}, // 2 Decimals
+			{foobar{"foo": 1234}, "map[foo:1234]"},              // Misc. type
+			{foobarString("1234"), "1" + thousandsMark + "234"}, // Misc. type (string in fact)
+			{"1234.5678.9", "1234.5678.9"},                      // Invalid number
 		}
 
 		for _, c := range cases {

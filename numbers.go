@@ -2,46 +2,27 @@ package i18n
 
 import (
 	"bytes"
-	"strconv"
+	"fmt"
+	"regexp"
 
 	"golang.org/x/text/language"
 )
+
+var reNumber = regexp.MustCompile(`^-?\d+(\.\d+)?$`)
 
 // Fmtn returns a formatted number with decimal and thousands marks.
 func Fmtn(l language.Tag, n interface{}) (s string) {
 	var b []byte
 
 	switch n.(type) {
-	case uint:
-		b = []byte(strconv.FormatUint(uint64(n.(uint)), 10))
-	case uint8:
-		b = []byte(strconv.FormatUint(uint64(n.(uint8)), 10))
-	case uint16:
-		b = []byte(strconv.FormatUint(uint64(n.(uint16)), 10))
-	case uint32:
-		b = []byte(strconv.FormatUint(uint64(n.(uint32)), 10))
-	case uint64:
-		b = []byte(strconv.FormatUint(n.(uint64), 10))
-	case int:
-		b = []byte(strconv.Itoa(n.(int)))
-	case int8:
-		b = []byte(strconv.FormatInt(int64(n.(int8)), 10))
-	case int16:
-		b = []byte(strconv.FormatInt(int64(n.(int16)), 10))
-	case int32:
-		b = []byte(strconv.FormatInt(int64(n.(int32)), 10))
-	case int64:
-		b = []byte(strconv.FormatInt(n.(int64), 10))
-	case float32:
-		b = []byte(strconv.FormatFloat(float64(n.(float32)), 'f', -1, 32))
-	case float64:
-		b = []byte(strconv.FormatFloat(n.(float64), 'f', -1, 64))
-	case string:
-		b = []byte(n.(string))
 	case []byte:
 		b = n.([]byte)
 	default:
-		return
+		b = []byte(fmt.Sprint(n))
+	}
+
+	if !reNumber.Match(b) {
+		return string(b)
 	}
 
 	thousandsMark := ","
@@ -51,6 +32,12 @@ func Fmtn(l language.Tag, n interface{}) (s string) {
 		decimalMark = seps[1]
 	}
 
+	var isNeg bool
+	if b[0] == '-' {
+		isNeg = true
+		b = b[1:]
+	}
+
 	bb := bytes.Split(b, []byte("."))
 	switch len(bb) {
 	case 1:
@@ -58,8 +45,6 @@ func Fmtn(l language.Tag, n interface{}) (s string) {
 	case 2:
 		s = decimalMark + string(bb[1])
 		b = bb[0]
-	default:
-		return string(b) // Can't have 2 decimal marks in a number so return as provided.
 	}
 
 	j := 0
@@ -69,6 +54,9 @@ func Fmtn(l language.Tag, n interface{}) (s string) {
 		}
 		s = string(b[i]) + s
 		j++
+	}
+	if isNeg {
+		s = "-" + s
 	}
 	return
 }
