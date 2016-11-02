@@ -7,6 +7,9 @@ import (
 	"golang.org/x/text/language"
 )
 
+// LocaleFieldName defines the name used for the locale cookie or any parsable field name.
+const LocaleFieldName = "locale"
+
 // An handler contains all the necessary to parse a request and match the best language for the request.
 type handler struct {
 	next     http.Handler
@@ -51,4 +54,23 @@ func (h *handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		t = &Translator{h.fallback, h.locales[h.fallback]}
 	}
 	h.next.ServeHTTP(w, RequestWithTranslator(r, t))
+}
+
+// SetCookie writes the response cookie when the parsed request locale differs from the one set inside the LocaleFieldName cookie.
+// If the parsing has not been done yet (request translator is nil), this function can't help you so no cookie will be set.
+func SetCookie(w http.ResponseWriter, r *http.Request) {
+	rt := RequestTranslator(r)
+	if rt == nil {
+		return
+	}
+	if c, err := r.Cookie(LocaleFieldName); err == nil {
+		if cv, err := language.Parse(c.Value); err == nil && cv == rt.Locale {
+			return // Cookie value and locale parsed from request are the same: nothing to do.
+		}
+	}
+	http.SetCookie(w, &http.Cookie{
+		Name:   LocaleFieldName,
+		Value:  rt.Locale.String(),
+		MaxAge: 315360000,
+	})
 }
