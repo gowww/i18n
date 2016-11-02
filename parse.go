@@ -18,9 +18,9 @@ func ParseAcceptLanguage(r *http.Request) []language.Tag {
 	return t
 }
 
-// ParseCookie parses the "locale" cookie.
+// ParseCookie parses the LocaleFieldName cookie.
 func ParseCookie(r *http.Request) []language.Tag {
-	c, err := r.Cookie("locale")
+	c, err := r.Cookie(LocaleFieldName)
 	if err != nil {
 		return nil
 	}
@@ -31,9 +31,9 @@ func ParseCookie(r *http.Request) []language.Tag {
 	return []language.Tag{t}
 }
 
-// ParseFormValue parses the "locale" form value.
+// ParseFormValue parses the LocaleFieldName form value.
 func ParseFormValue(r *http.Request) []language.Tag {
-	t, err := language.Parse(r.FormValue("locale"))
+	t, err := language.Parse(r.FormValue(LocaleFieldName))
 	if err != nil {
 		return nil
 	}
