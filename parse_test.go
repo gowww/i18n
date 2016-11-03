@@ -41,7 +41,7 @@ func TestParseFormValue(t *testing.T) {
 		v    string
 		want []language.Tag
 	}{
-		{"", []language.Tag{language.Und}},
+		{"", []language.Tag{}},
 		{"en", []language.Tag{language.English}},
 	}
 	for _, c := range cases {
