@@ -71,6 +71,7 @@ func SetCookie(w http.ResponseWriter, r *http.Request) {
 	http.SetCookie(w, &http.Cookie{
 		Name:   LocaleFieldName,
 		Value:  rt.Locale.String(),
+		Path:   "/",
 		MaxAge: 315360000,
 	})
 }
