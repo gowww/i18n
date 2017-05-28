@@ -31,7 +31,7 @@ type Translator struct {
 const TnPlaceholder = "{{.n}}"
 
 // Tn returns the translation associated to key, for the client locale.
-// If the translation defines plural forms (zero, one, other), it uses the most apropriate.
+// If the translation defines plural forms (zero, one, other), it uses the most appropriate.
 // All TnPlaceholder in the translation are replaced with number n.
 // When translation is not found, an empty string is returned.
 func (t *Translator) Tn(key string, n interface{}, a ...interface{}) (s string) {
