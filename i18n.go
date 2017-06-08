@@ -1,4 +1,4 @@
-// Package i18n provides internationalization utilites.
+// Package i18n provides internationalization utilities.
 package i18n
 
 import (
