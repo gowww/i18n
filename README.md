@@ -8,7 +8,7 @@ Package [i18n](https://godoc.org/github.com/gowww/i18n) provides internationaliz
 
 	```Shell
 	go get -u github.com/gowww/i18n
-	````
+	```
 
 2. Import it in your code with dependencies:
 
