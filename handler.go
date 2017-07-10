@@ -25,7 +25,7 @@ func Handle(h http.Handler, l Locales, fallback language.Tag, parsers ...Parser)
 		panic(fmt.Errorf("i18n: fallback locale %q doesn't exist in locales map", fallback))
 	}
 	if len(parsers) == 0 {
-		panic("i18n: at least one matcher must be provided")
+		panic("i18n: at least one parser must be provided")
 	}
 	t := []language.Tag{fallback} // In a language.Matcher, the first element is used as the default value in case no match is found.
 	for lt := range l {
@@ -64,13 +64,13 @@ func SetCookie(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if c, err := r.Cookie(LocaleFieldName); err == nil {
-		if cv, err := language.Parse(c.Value); err == nil && cv == rt.Locale {
+		if cv, err := language.Parse(c.Value); err == nil && cv == rt.Locale() {
 			return // Cookie value and locale parsed from request are the same: nothing to do.
 		}
 	}
 	http.SetCookie(w, &http.Cookie{
 		Name:   LocaleFieldName,
-		Value:  rt.Locale.String(),
+		Value:  rt.Locale().String(),
 		Path:   "/",
 		MaxAge: 315360000,
 	})

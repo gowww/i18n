@@ -10,8 +10,8 @@ import (
 
 var reNumber = regexp.MustCompile(`^-?\d+(\.\d+)?$`)
 
-// Fmtn returns a formatted number with decimal and thousands marks.
-func Fmtn(l language.Tag, n interface{}) (s string) {
+// FmtNumber returns a formatted number with decimal and thousands marks.
+func FmtNumber(l language.Tag, n interface{}) (s string) {
 	var b []byte
 
 	switch n.(type) {

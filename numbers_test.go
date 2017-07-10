@@ -2,7 +2,7 @@ package i18n
 
 import "testing"
 
-func TestFmtn(t *testing.T) {
+func TestFmtNumber(t *testing.T) {
 	type foobarString string
 	type foobar map[interface{}]interface{}
 
@@ -37,9 +37,9 @@ func TestFmtn(t *testing.T) {
 		}
 
 		for _, c := range cases {
-			got := Fmtn(l, c.v)
+			got := FmtNumber(l, c.v)
 			if got != c.want {
-				t.Errorf("Fmtn(%v, %#v) == %#v, want %#v", l, c.v, got, c.want)
+				t.Errorf("FmtNumber(%v, %#v) == %#v, want %#v", l, c.v, got, c.want)
 			}
 		}
 
