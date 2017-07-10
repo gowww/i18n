@@ -28,13 +28,35 @@ type TransFileSize uint64
 
 // T implements the Translatable interface.
 func (v TransFileSize) T(l language.Tag) string {
-	var u string
+	f := float64(v)
+	var unit string
 	switch l {
 	case language.French:
-		u = "octets"
+		switch v {
+		case 1:
+			unit = "octet"
+		default:
+			f, unit = humanateBytes(f, []string{"octets", "ko", "Mo", "Go", "To", "Po", "Eo"})
+		}
 	default:
-		u = "bytes"
+		switch f {
+		case 1:
+			unit = "byte"
+		default:
+			f, unit = humanateBytes(f, []string{"bytes", "kB", "MB", "GB", "TB", "PB", "EB"})
+		}
 	}
-	// TODO: bytes, kB, MB, GB, TB, PB, EB.
-	return FmtNumber(l, v) + " " + u
+	return FmtNumber(l, f) + " " + unit
+}
+
+func humanateBytes(f float64, units []string) (float64, string) {
+	var unit string
+	for _, u := range units {
+		if f/1000 < 1 {
+			unit = u
+			break
+		}
+		f /= 1000
+	}
+	return f, unit
 }
