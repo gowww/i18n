@@ -16,9 +16,8 @@ const (
 // ContextTranslator returns the translator used for the context.
 func ContextTranslator(c context.Context) *Translator {
 	v := c.Value(ContextKeyTranslator)
-	switch v.(type) {
-	case *Translator:
-		return v.(*Translator)
+	if t, ok := v.(*Translator); ok {
+		return t
 	}
 	return nil
 }
