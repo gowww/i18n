@@ -42,17 +42,12 @@ func HandleFunc(f http.HandlerFunc, l Locales, fallback language.Tag, parsers ..
 }
 
 func (h *handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	var t *Translator
+	var pref []language.Tag
 	for _, parser := range h.parsers {
-		locales := parser(r)
-		if locale, _, conf := h.matcher.Match(locales...); conf != language.No {
-			t = &Translator{locale, h.locales[locale]}
-			break
-		}
+		pref = append(pref, parser(r)...)
 	}
-	if t == nil {
-		t = &Translator{h.fallback, h.locales[h.fallback]}
-	}
+	locale, _, _ := h.matcher.Match(pref...)
+	t := &Translator{locale, h.locales[locale]}
 	h.next.ServeHTTP(w, RequestWithTranslator(r, t))
 }
 
@@ -61,7 +56,7 @@ func (h *handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 func SetCookie(w http.ResponseWriter, r *http.Request) {
 	rt := RequestTranslator(r)
 	if rt == nil {
-		return
+		panic("i18n: no locale without i18n.Handle")
 	}
 	if c, err := r.Cookie(LocaleFieldName); err == nil {
 		if cv, err := language.Parse(c.Value); err == nil && cv == rt.Locale() {
