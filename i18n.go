@@ -24,7 +24,7 @@ func (l Locales) Has(lt language.Tag) bool {
 // A Translator contains the current locale with its translations and provides functions to get them.
 type Translator struct {
 	locale       language.Tag
-	Translations Translations
+	translations Translations
 }
 
 // Locale returns the locale used be the translator.
@@ -46,16 +46,16 @@ func (t *Translator) Tn(key string, n int, args ...interface{}) (s string) {
 		}
 	}
 	if n == 0 {
-		if v, ok := t.Translations[key+"Zero"]; ok {
+		if v, ok := t.translations[key+"Zero"]; ok {
 			s = fmt.Sprintf(v, args...)
 		}
 	} else if n == 1 {
-		if v, ok := t.Translations[key+"One"]; ok {
+		if v, ok := t.translations[key+"One"]; ok {
 			s = fmt.Sprintf(v, args...)
 		}
-	} else if v, ok := t.Translations[key+"Other"]; ok {
+	} else if v, ok := t.translations[key+"Other"]; ok {
 		s = fmt.Sprintf(v, args...)
-	} else if v, ok := t.Translations[key]; ok {
+	} else if v, ok := t.translations[key]; ok {
 		s = fmt.Sprintf(v, args...)
 	}
 	s = strings.Replace(s, TnPlaceholder, FmtNumber(t.Locale(), n), -1)
