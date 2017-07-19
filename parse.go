@@ -6,7 +6,7 @@ import (
 	"golang.org/x/text/language"
 )
 
-// A Parser is a funcion that returns a list of accepted languages, most preferred first.
+// A Parser is a funcion that returns a list of accepted languages according to a request variable (header, URL...), most preferred first.
 type Parser func(*http.Request) []language.Tag
 
 // ParseAcceptLanguage parses the Accept-Language header.

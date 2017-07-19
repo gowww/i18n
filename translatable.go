@@ -36,20 +36,20 @@ func (v TransFileSize) T(l language.Tag) string {
 		case 1:
 			unit = "octet"
 		default:
-			f, unit = humanateBytes(f, []string{"octets", "ko", "Mo", "Go", "To", "Po", "Eo"})
+			f, unit = humanizeBytes(f, []string{"octets", "ko", "Mo", "Go", "To", "Po", "Eo"})
 		}
 	default:
 		switch f {
 		case 1:
 			unit = "byte"
 		default:
-			f, unit = humanateBytes(f, []string{"bytes", "kB", "MB", "GB", "TB", "PB", "EB"})
+			f, unit = humanizeBytes(f, []string{"bytes", "kB", "MB", "GB", "TB", "PB", "EB"})
 		}
 	}
 	return FmtNumber(l, f) + " " + unit
 }
 
-func humanateBytes(f float64, units []string) (float64, string) {
+func humanizeBytes(f float64, units []string) (float64, string) {
 	var unit string
 	for _, u := range units {
 		if f/1000 < 1 {
